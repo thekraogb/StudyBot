@@ -10,7 +10,7 @@ const MessageList = ({ messages, handleSelection, handleQuizSelection }) => {
     <div className="message-list">
       {messages.length > 0 && (
         <>
-          {messages.map((msg, index) => {
+          {messages.map((msg) => {
             // render main answer component when user prompt a question
             if (
               msg.sender === "ChatGPT" &&
@@ -20,7 +20,7 @@ const MessageList = ({ messages, handleSelection, handleQuizSelection }) => {
             ) {
               return (
                 <Main
-                  key={index}
+                  key={msg.id}
                   agentResponse={msg.message}
                   commonQuestions={msg.commonQuestions}
                   subtopics={msg.subtopics}
@@ -37,7 +37,7 @@ const MessageList = ({ messages, handleSelection, handleQuizSelection }) => {
             ) {
               return (
                 <QuestionAnswer
-                  key={index}
+                  key={msg.id}
                   agentResponse={msg.message}
                   questions={msg.commonQuestions}
                   handleSelection={handleSelection}
@@ -49,25 +49,24 @@ const MessageList = ({ messages, handleSelection, handleQuizSelection }) => {
             ) {
               return (
                 <SubtopicExplanation
-                  key={index}
+                  key={msg.id}
                   agentResponse={msg.message}
                   subtopics={msg.subtopics}
                   handleSelection={handleSelection}
                 />
               );
             } else if (msg.sender === "ChatGPT" && msg.optionType === "quiz") {
-              return <QuizOptions handleQuizSelection={handleQuizSelection} />;
+              return <QuizOptions key= {msg.id} handleQuizSelection={handleQuizSelection} quizId= {msg.quizId} />;
             } else if (
               msg.sender === "ChatGPT" &&
               msg.optionType === "takeQuizOrShowAnswer"
             ) {
               return (
                 <QuizFeedbackOrAnswer
-                  key={index}
+                  key={msg.id}
                   agentResponse={msg.message}
                   quizzes={msg.quizzes}
                   handleQuizSelection={handleQuizSelection}
-                  takeQuiz={msg.takeQuiz}
                 />
               );
             }
@@ -75,7 +74,7 @@ const MessageList = ({ messages, handleSelection, handleQuizSelection }) => {
             // render initial agent message
             else if (msg.sender === "ChatGPT") {
               return (
-                <div className="agent" key={index}>
+                <div className="agent" key={msg.id}>
                   <p
                     style={{
                       color: "#667085",
@@ -92,7 +91,7 @@ const MessageList = ({ messages, handleSelection, handleQuizSelection }) => {
             // render user message
             else {
               return (
-                <div className="user" key={index}>
+                <div className="user" key={msg.id}>
                   <p className="prompt">{msg.message}</p>
                 </div>
               );

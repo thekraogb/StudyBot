@@ -10,11 +10,13 @@ import {
   getQuizFeedback,
   getQuizAnswer,
 } from "../services/api";
+import { v4 as uuidv4 } from "uuid";
 
 const ChatPage = () => {
   const [inputValue, setInputValue] = useState("");
   const [messages, setMessages] = useState([
     {
+      id: uuidv4(),
       message: "Hi! Ask me any question related to STEM.",
       sender: "ChatGPT",
     },
@@ -35,6 +37,7 @@ const ChatPage = () => {
       setMessages((prevMessages) => {
         // Create user message and set takeQuizFlag to true if user's prompt is the quiz answer
         const userMessage = {
+          id: uuidv4(),
           message: inputValue,
           sender: "user",
           ...(takeQuizFlag ? { takeQuiz: true } : {}),
@@ -46,11 +49,20 @@ const ChatPage = () => {
       let response;
 
       if (takeQuizFlag) {
-        const question = messages
-          .slice()
-          .reverse()
-          .find((msg) => msg.sender === "user" && msg.message !== inputValue);
-        response = await getQuizFeedback(question.message, inputValue); // get agent's quiz answer feedback
+        const question = (messages) => {
+          return messages.reduceRight((found, msg) => {
+            if (
+              !found &&
+              msg.sender === "user" &&
+              msg.selectionType === "quiz"
+            ) {
+              return msg;
+            }
+            return found;
+          }, null);
+        };
+        const quizMessage = question(messages);
+        response = await getQuizFeedback(quizMessage.message, inputValue); // get agent's quiz answer feedback
       } else {
         response = await getMainAnswer(inputValue); // get agent's main answer response
       }
@@ -64,6 +76,7 @@ const ChatPage = () => {
             // (the agent's feedback to user's answer or answer of the quiz message ) and
             // reset takeQuiz to false so that further agent messages, after a user prompt, are the main options message.
             const answerResponse = {
+              id: uuidv4(),
               message: response.feedback || " ",
               sender: "ChatGPT",
               optionType: "takeQuizOrShowAnswer",
@@ -75,6 +88,7 @@ const ChatPage = () => {
           } else {
             // if answerQuiz is undefined or false, add the main answer response
             const agentResponse = {
+              id: uuidv4(),
               message: response.answer || " ",
               sender: "ChatGPT",
               commonQuestions: response.options?.commonQuestions || [],
@@ -113,6 +127,7 @@ const ChatPage = () => {
     }
 
     const choiceResponse = {
+      id: uuidv4(),
       message: response.answer || " ",
       sender: "ChatGPT",
       optionType: selectionType,
@@ -128,9 +143,23 @@ const ChatPage = () => {
   };
 
   // Handle quiz selection
-  const handleQuizSelection = async (selection, selectionType, takeQuiz) => {
+  const handleQuizSelection = async (
+    selection,
+    selectionType,
+    takeQuiz,
+    quiz_Id
+  ) => {
     setIsResponseComplete(false);
-    const userSelection = { message: selection, sender: "user" };
+
+    const quizId = selectionType === "quiz" ? uuidv4() : null;
+
+    const userSelection = {
+      id: uuidv4(),
+      message: selection,
+      selectionType: selectionType,
+      sender: "user",
+      quizId,
+    };
     setMessages((prevMessages) => [...prevMessages, userSelection]);
 
     let response;
@@ -138,10 +167,9 @@ const ChatPage = () => {
     // get quiz answer
     if (selectionType === "takeQuizOrShowAnswer" && takeQuiz === false) {
       // get user quiz selection
-      const quizSelection = messages
-        .slice()
-        .reverse()
-        .find((msg) => msg.sender === "user" && msg.message !== selection);
+      const quizSelection = messages.find(
+        (msg) => msg.sender === "user" && msg.quizId === quiz_Id
+      );
       response = await getQuizAnswer(quizSelection.message);
     }
 
@@ -149,6 +177,7 @@ const ChatPage = () => {
 
     if (response) {
       choiceResponse = {
+        id: uuidv4(),
         message: response.answer || " ",
         sender: "ChatGPT",
         optionType: selectionType,
@@ -157,10 +186,12 @@ const ChatPage = () => {
       };
     } else {
       choiceResponse = {
+        id: uuidv4(),
         message: "Enter your answer or show answer",
         sender: "ChatGPT",
         optionType: selectionType,
         takeQuiz: takeQuiz,
+        quizId,
       };
     }
     setMessages((prevMessages) => [...prevMessages, choiceResponse]);

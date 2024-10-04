@@ -1,23 +1,26 @@
-import { marked } from "marked";
+import ReactMarkdown from "react-markdown";
 
 const subtopicExplanation = ({
   agentResponse,
   subtopics = [],
   handleSelection,
 }) => {
-  // convert Markdown to HTML
-  const answer = marked(agentResponse || "");
-
   return (
     <div className="agent">
-      <div className="answer" dangerouslySetInnerHTML={{ __html: answer }} />
+      <div className="answer">
+        {" "}
+        <ReactMarkdown>{agentResponse}</ReactMarkdown>{" "}
+      </div>
       <div className="choices-list">
         {subtopics.length > 0 ? (
           subtopics.map((subtopic, index) => (
             <button
               className="choice-button"
               key={index}
-              onClick={() => handleSelection(subtopic, "subtopic")}
+              onClick={(e) => {
+                handleSelection(subtopic, "subtopic");
+                e.target.disabled = true;
+              }}
             >
               {subtopic}
             </button>

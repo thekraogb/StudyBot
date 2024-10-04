@@ -1,5 +1,5 @@
 import React from "react";
-import { marked } from "marked";
+import ReactMarkdown from "react-markdown";
 
 const Main = ({
   agentResponse,
@@ -9,12 +9,12 @@ const Main = ({
   handleSelection,
   handleQuizSelection,
 }) => {
-  // convert Markdown to HTML
-  const answer = marked(agentResponse || "");
-
   return (
     <div className="agent">
-      <div className="answer" dangerouslySetInnerHTML={{ __html: answer }} />
+      <div className="answer">
+        {" "}
+        <ReactMarkdown>{agentResponse}</ReactMarkdown>{" "}
+      </div>
 
       <p
         style={{ fontWeight: "bold", fontSize: "0.8rem", marginBottom: "8px" }}
@@ -27,7 +27,10 @@ const Main = ({
             <button
               className="choice-button"
               key={index}
-              onClick={() => handleSelection(question, "question")}
+              onClick={(e) => {
+                handleSelection(question, "question");
+                e.target.disabled = true;
+              }}
             >
               {question}
             </button>
@@ -53,7 +56,10 @@ const Main = ({
             <button
               className="choice-button"
               key={index}
-              onClick={() => handleSelection(subtopic, "subtopic")}
+              onClick={(e) => {
+                handleSelection(subtopic, "subtopic");
+                e.target.disabled = true;
+              }}
             >
               {subtopic}
             </button>
@@ -79,7 +85,10 @@ const Main = ({
             <button
               className="choice-button"
               key={index}
-              onClick={() => handleQuizSelection(quiz, "quiz", true)}
+              onClick={(e) => {
+                handleQuizSelection(quiz, "quiz", true);
+                e.target.disabled = true;
+              }}
             >
               {quiz}
             </button>

@@ -1,4 +1,4 @@
-const QuizOptions = ({ handleQuizSelection }) => {
+const QuizOptions = ({ handleQuizSelection, quizId}) => {
   return (
     <div className="agent">
       <p
@@ -14,9 +14,10 @@ const QuizOptions = ({ handleQuizSelection }) => {
       <button
         className="choice-button"
         style={{ textAlign: "center" }}
-        onClick={() =>
-          handleQuizSelection("Show answer", "takeQuizOrShowAnswer", false)
-        }
+        onClick={(e) => {
+          handleQuizSelection("Show answer", "takeQuizOrShowAnswer", false, quizId);
+          e.target.disabled = true;
+        }}
       >
         Show answer
       </button>

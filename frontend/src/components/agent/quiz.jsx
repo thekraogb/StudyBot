@@ -1,15 +1,15 @@
+import ReactMarkdown from "react-markdown";
+
 const quizFeedbackOrAnswer = ({
   agentResponse,
   quizzes = [],
   handleQuizSelection,
-  takeQuiz,
 }) => {
   return (
     <div className="agent">
-      <p className="answer">
-        {" "}
-        {takeQuiz ? <strong>Feedback:</strong> : null} {agentResponse}{" "}
-      </p>
+      <div className="answer">
+        <ReactMarkdown>{agentResponse}</ReactMarkdown>
+      </div>
 
       <div className="choices-list">
         {quizzes.length > 0 ? (
@@ -17,7 +17,10 @@ const quizFeedbackOrAnswer = ({
             <button
               className="choice-button"
               key={index}
-              onClick={() => handleQuizSelection(quiz, "quiz", true)}
+              onClick={(e) => {
+                handleQuizSelection(quiz, "quiz", true);
+                e.target.disabled = true;
+              }}
             >
               {quiz}
             </button>

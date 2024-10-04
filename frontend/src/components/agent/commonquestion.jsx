@@ -1,19 +1,22 @@
-import { marked } from "marked";
+import ReactMarkdown from "react-markdown";
 
 const QuestionAnswer = ({ agentResponse, questions = [], handleSelection }) => {
-  // convert Markdown to HTML
-  const answer = marked(agentResponse || "");
-
   return (
     <div className="agent">
-      <div className="answer" dangerouslySetInnerHTML={{ __html: answer }} />
+      <div className="answer">
+        {" "}
+        <ReactMarkdown>{agentResponse}</ReactMarkdown>{" "}
+      </div>
       <div className="choices-list">
         {questions.length > 0 ? (
           questions.map((question, index) => (
             <button
               className="choice-button"
               key={index}
-              onClick={() => handleSelection(question, "question")}
+              onClick={(e) => {
+                handleSelection(question, "question");
+                e.target.disabled = true;
+              }}
             >
               {question}
             </button>

@@ -136,3 +136,8 @@
 .choice-button:hover {
   background-color: #555;
 }
+
+.choice-button:disabled {
+  background-color: #555; 
+  cursor: default;
+}
