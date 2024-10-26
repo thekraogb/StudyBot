@@ -1,5 +1,6 @@
 import React from "react";
 import ReactMarkdown from "react-markdown";
+import { v4 as uuidv4 } from "uuid";
 
 const Main = ({
   agentResponse,
@@ -23,13 +24,12 @@ const Main = ({
       </p>
       <div className="choices-list">
         {commonQuestions?.length > 0 ? (
-          commonQuestions.map((question, index) => (
+          commonQuestions.map((question) => (
             <button
               className="choice-button"
-              key={index}
+              key={uuidv4()}
               onClick={(e) => {
                 handleSelection(question, "question");
-                e.target.disabled = true;
               }}
             >
               {question}
@@ -52,13 +52,12 @@ const Main = ({
       </p>
       <div className="choices-list">
         {subtopics?.length > 0 ? (
-          subtopics.map((subtopic, index) => (
+          subtopics.map((subtopic) => (
             <button
               className="choice-button"
-              key={index}
+              key={uuidv4()}
               onClick={(e) => {
                 handleSelection(subtopic, "subtopic");
-                e.target.disabled = true;
               }}
             >
               {subtopic}
@@ -81,13 +80,12 @@ const Main = ({
       </p>
       <div className="choices-list">
         {quizzes?.length > 0 ? (
-          quizzes.map((quiz, index) => (
+          quizzes.map((quiz) => (
             <button
               className="choice-button"
-              key={index}
+              key={uuidv4()}
               onClick={(e) => {
                 handleQuizSelection(quiz, "quiz", true);
-                e.target.disabled = true;
               }}
             >
               {quiz}
@@ -97,17 +95,6 @@ const Main = ({
           <p className="alt-text">No quizzes yet</p>
         )}
       </div>
-
-      <p
-        style={{
-          fontWeight: "bold",
-          fontSize: "0.8rem",
-          marginBottom: "3px",
-          marginTop: "19px",
-        }}
-      >
-        Ask more questions:
-      </p>
     </div>
   );
 };

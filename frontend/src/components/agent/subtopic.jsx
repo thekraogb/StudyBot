@@ -1,4 +1,5 @@
 import ReactMarkdown from "react-markdown";
+import { v4 as uuidv4 } from "uuid";
 
 const subtopicExplanation = ({
   agentResponse,
@@ -8,18 +9,26 @@ const subtopicExplanation = ({
   return (
     <div className="agent">
       <div className="answer">
-        {" "}
-        <ReactMarkdown>{agentResponse}</ReactMarkdown>{" "}
+        <ReactMarkdown>{agentResponse}</ReactMarkdown>
       </div>
+      <p
+        style={{
+          fontWeight: "bold",
+          fontSize: "0.8rem",
+          marginBottom: "8px",
+          paddingBottom: "0px",
+        }}
+      >
+        More subtopics:
+      </p>
       <div className="choices-list">
         {subtopics.length > 0 ? (
-          subtopics.map((subtopic, index) => (
+          subtopics.map((subtopic) => (
             <button
               className="choice-button"
-              key={index}
+              key={uuidv4()}
               onClick={(e) => {
                 handleSelection(subtopic, "subtopic");
-                e.target.disabled = true;
               }}
             >
               {subtopic}
@@ -29,15 +38,6 @@ const subtopicExplanation = ({
           <p className="alt-text">No subtopics yet</p>
         )}
 
-        <p
-          style={{
-            fontWeight: "bold",
-            fontSize: "0.8rem",
-            marginBottom: "3px",
-          }}
-        >
-          Ask more questions:
-        </p>
       </div>
     </div>
   );

@@ -1,0 +1,76 @@
+.appbar-container {
+  display: flex;
+}
+
+.appbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  background-color: #fcfcfc;
+  width: 100%;
+  transition: margin-left 0.4s ease, width 0.4s ease;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  padding-top: 0.5%;
+}
+
+.icon-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-right: 15px;
+  border-radius: 10px;
+  padding: 5px;
+}
+
+.icon-button:hover {
+  background: #f1f1f1;
+}
+
+.history-button {
+  margin-left: 15px;
+}
+
+.title {
+  flex-grow: 1;
+  font-family: Nunito, sans-serif;
+  font-size: 2.3rem;
+  font-weight: 500;
+  color: black;
+  margin-left: 20px;
+  padding-bottom: 0%;
+  margin-bottom: 0%;
+  margin-top: 0.5%;
+}
+
+.name {
+  background: none;
+  border: 1.4px solid black;
+  cursor: pointer;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  text-align: center;
+  margin: 0%;
+}
+
+.name:hover {
+  background: #f1f1f1;
+}
+
+.name-container {
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: 10px;
+  padding: 3px;
+  margin-right: 25px;
+}
+
+.name-container:hover {
+  background: #f1f1f1;
+}

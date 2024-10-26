@@ -1,4 +1,5 @@
 import ReactMarkdown from "react-markdown";
+import { v4 as uuidv4 } from "uuid";
 
 const quizFeedbackOrAnswer = ({
   agentResponse,
@@ -10,16 +11,24 @@ const quizFeedbackOrAnswer = ({
       <div className="answer">
         <ReactMarkdown>{agentResponse}</ReactMarkdown>
       </div>
-
+      <p
+        style={{
+          fontWeight: "bold",
+          fontSize: "0.8rem",
+          marginBottom: "8px",
+          paddingBottom: "0px",
+        }}
+      >
+        More quizzes:
+      </p>
       <div className="choices-list">
         {quizzes.length > 0 ? (
-          quizzes.map((quiz, index) => (
+          quizzes.map((quiz) => (
             <button
               className="choice-button"
-              key={index}
+              key={uuidv4()}
               onClick={(e) => {
                 handleQuizSelection(quiz, "quiz", true);
-                e.target.disabled = true;
               }}
             >
               {quiz}
@@ -29,15 +38,6 @@ const quizFeedbackOrAnswer = ({
           <p className="alt-text">No quizzes yet</p>
         )}
 
-        <p
-          style={{
-            fontWeight: "bold",
-            fontSize: "0.8rem",
-            marginBottom: "3px",
-          }}
-        >
-          Ask more questions:
-        </p>
       </div>
     </div>
   );

@@ -21,7 +21,7 @@ export const getAnswer = async (req, res) => {
           {
             role: "system",
             content:
-              "You are an assistant for STEM-related topics. Answer questions or messages related to STEM" +
+              "You are a fault-tolerant assistant for STEM-related topics. Answer questions or messages related to STEM" +
               "with medium to long responses. Explain your answer using technical terms but in simple words." +
               "Resposne with 'None' if the messages are irrelevant.",
           },
@@ -59,8 +59,7 @@ export const getAnswer = async (req, res) => {
                 "subtopics": ["Subtopic 1", "Subtopic 2", "Subtopic 3"],
                 "quizzes": ["Quiz 1", "Quiz 2", "Quiz 3"]
               }\n\n` +
-                "Make sure the output strictly follows this structure." +
-                "If the answer is not related to STEM topics, leave the arrays empty.",
+                "Make sure the output strictly follows this structure." ,
             },
             {
               role: "user",
@@ -74,7 +73,7 @@ export const getAnswer = async (req, res) => {
     const optionsData = await optionsResponse.json();
     let options = optionsData.choices[0].message.content;
 
-    // Parse the options string into a JSON object
+    // convert options string into a JSON object
     try {
       options = JSON.parse(options);
     } catch (error) {
@@ -165,7 +164,7 @@ export const getQuestion = async (req, res) => {
     const optionsData = await optionsResponse.json();
     let options = optionsData.choices[0].message.content;
 
-    // Parse the options string into a JSON object
+    // convert options string into a JSON object
     try {
       options = JSON.parse(options);
     } catch (error) {
@@ -255,7 +254,7 @@ export const getsubtopic = async (req, res) => {
     const optionsData = await optionsResponse.json();
     let options = optionsData.choices[0].message.content;
 
-    // Parse the options string into a JSON object
+    // convert options string into a JSON object
     try {
       options = JSON.parse(options);
     } catch (error) {
@@ -344,7 +343,7 @@ export const getQuizFeedback = async (req, res) => {
     const optionsData = await optionsResponse.json();
     let options = optionsData.choices[0].message.content;
 
-    // Parse the options string into a JSON object
+    // convert options string into a JSON object
     try {
       options = JSON.parse(options);
     } catch (error) {
@@ -428,7 +427,7 @@ export const getQuizAnswer = async (req, res) => {
     const optionsData = await optionsResponse.json();
     let options = optionsData.choices[0].message.content;
 
-    // Parse the options string into a JSON object
+    // convert options string into a JSON object
     try {
       options = JSON.parse(options);
     } catch (error) {
