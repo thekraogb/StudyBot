@@ -118,7 +118,13 @@ const AuthPage = () => {
                 placeholder="Name"
                 required
                 autoComplete="off"
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => {
+                  const capitalized = e.target.value
+                    .split(" ")
+                    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(" ");
+                  setName(capitalized);
+                }}
               />
               <input
                 type="email"

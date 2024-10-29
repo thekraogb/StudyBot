@@ -69,9 +69,9 @@ const Appbar = () => {
           </button>
           <Tooltip id="newChat" />
           <div className="name-container" onClick={handleDropdownToggle}>
-            <h2 className="name" style={{ padding: "1px" }}>
+            <h3 className="name" style={{ padding: "1px" }}>
               {firstLetter}
-            </h2>
+            </h3>
             {isDropdownOpen && <UserDropdown />}
           </div>
         </div>

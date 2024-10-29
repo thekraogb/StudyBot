@@ -30,7 +30,7 @@ const UserDropdown = () => {
             onClick={(e) => handleLogoutClick(e)}
           >
             <img src={logout} alt="Logout" style={{ width: 23, height: 23 }} />
-            <span>Logout</span>
+            <span>Log Out</span>
           </button>
         </div>
       </div>
