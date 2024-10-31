@@ -9,20 +9,20 @@ StudyBot is an interactive study assistant bot made for STEM students. It helps 
 
 
 ## Get Started
-to run the app in dev mode:
-1. run the Frontend
+To run the app in dev mode:
+1. Run the frontend
    
 ```bash
 cd frontend
 npm run dev
 ```
-2. run the Backend
+2. Run the backend
 
 ```bash
 cd backend
 npm run dev
 ```
-3. create ```.env``` file with following credentials:
+3. Create ```.env``` file with following credentials:
    - ```PORT```: port number
    - ```API_KEY```: OpenAI API key
    - ```MONGO_URI```: MongoDB connection URI
