@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UserDropdown it renders UserDropdown component 1`] = `
+<div
+  className="dropdown"
+  onClick={[Function]}
+>
+  <div
+    className="dropdown-menu"
+  >
+    <div
+      className="user-info"
+    >
+      <strong>
+        Thekra
+        ,
+      </strong>
+      <br />
+      thekra@gmail.com
+    </div>
+    <hr
+      className="separator"
+    />
+    <div
+      className="logout"
+    >
+      <button
+        className="logout-button"
+        onClick={[Function]}
+      >
+        <img
+          alt="Logout"
+          src="test-file-stub"
+          style={
+            {
+              "height": 23,
+              "width": 23,
+            }
+          }
+        />
+        <span>
+          Log out
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+`;

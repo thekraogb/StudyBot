@@ -1,0 +1,52 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Sidebar it renders Sidebar component 1`] = `
+<div
+  className="sidebar "
+>
+  <div
+    className="chat-list"
+  >
+    <div
+      className="chat-item"
+      onClick={[Function]}
+    >
+      <span
+        className="chat-text"
+      >
+        whats data structure
+      </span>
+      <button
+        aria-label="delete"
+        className="delete-btn"
+        onClick={[Function]}
+      >
+        <img
+          alt="Delete"
+          src="test-file-stub"
+        />
+      </button>
+    </div>
+    <div
+      className="chat-item"
+      onClick={[Function]}
+    >
+      <span
+        className="chat-text"
+      >
+        whats OOP
+      </span>
+      <button
+        aria-label="delete"
+        className="delete-btn"
+        onClick={[Function]}
+      >
+        <img
+          alt="Delete"
+          src="test-file-stub"
+        />
+      </button>
+    </div>
+  </div>
+</div>
+`;

@@ -1,0 +1,93 @@
+.sidebar {
+  --sb-track-color: #fcfcfc;
+  --sb-thumb-color: #ccc;
+  --sb-size: 10px;
+}
+
+.sidebar::-webkit-scrollbar {
+  width: var(--sb-size);
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: var(--sb-track-color);
+  border-radius: 6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb-color);
+  border-radius: 10px;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  .sidebar {
+    scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
+  }
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -300px;
+  width: 300px;
+  height: 100vh;
+  background: #fcfcfc;
+  border-right: 1px solid #ccc;
+  z-index: 1000;
+  transition: left 0.4s ease;
+  overflow: auto;
+  overflow-x: hidden;
+}
+
+.sidebar.show {
+  left: 0;
+}
+
+.chat-list {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  margin: 25% auto 5%;
+}
+
+.chat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: transparent;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 7px;
+  margin-bottom: 10px;
+  font-size: 15px;
+  color: #2a2a2a;
+  transition: transform 0.4s ease;
+  cursor: pointer;
+}
+
+.chat-item:hover {
+  transform: translateY(-1.5px);
+}
+
+.chat-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 70%;
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.delete-btn img {
+  width: 18px;
+  height: 18px;
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.delete-btn img:hover {
+  opacity: 1;
+}

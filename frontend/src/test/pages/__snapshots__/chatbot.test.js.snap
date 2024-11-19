@@ -1,0 +1,60 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Chatbot it renders intial chatbot component 1`] = `
+<div
+  className="chatbot-wrapper "
+>
+  <div
+    className="chatbot-container "
+  >
+    <div
+      className="message-list"
+    >
+      <div
+        className="agent"
+      >
+        <p
+          style={
+            {
+              "color": "#667085",
+              "marginBottom": "5px",
+              "marginTop": "5px",
+              "padding": "0px",
+            }
+          }
+        >
+          Hi! Ask me any question related to STEM.
+        </p>
+      </div>
+    </div>
+  </div>
+  <div
+    className="input-container"
+  >
+    <input
+      className="ask-me-input"
+      onChange={[Function]}
+      onKeyPress={[Function]}
+      placeholder="Ask me"
+      type="text"
+      value=""
+    />
+    <button
+      className="send-button"
+      disabled={true}
+      onClick={[Function]}
+    >
+      <img
+        alt="send"
+        src="test-file-stub"
+        style={
+          {
+            "height": 24,
+            "width": 24,
+          }
+        }
+      />
+    </button>
+  </div>
+</div>
+`;

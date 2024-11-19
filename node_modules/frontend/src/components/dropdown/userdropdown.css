@@ -1,0 +1,43 @@
+.dropdown {
+  position: absolute;
+  top: 90%;
+  right: 0;
+  /* margin-top: 0%; */
+  margin-right: 1%;
+  padding: 10px;
+  z-index: 100;
+  border-radius: 15px;
+  border: 1px solid #ccc;
+  cursor: default;
+}
+
+.user-info,
+.logout {
+  width: 100%;
+  margin: 5px;
+}
+
+.separator {
+  border: 1px solid #ccc;
+}
+
+.logout-button {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  border-radius: 10px;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logout-button:hover {
+  background: #f1f1f1;
+}
+
+.logout-button span {
+  font-size: 0.94rem;
+}

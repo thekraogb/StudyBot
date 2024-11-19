@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RequireAuth it renders RequireAuth when token has value (redirects to home page) 1`] = `null`;
+
+exports[`RequireAuth it renders RequireAuth when token is empty (redirects to login page) 1`] = `null`;

@@ -1,0 +1,169 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`QuizOptions it renders QuizOptions component 1`] = `
+[
+  <div
+    className="appbar-container"
+  >
+    <header
+      className="appbar"
+      style={
+        {
+          "marginLeft": "0",
+          "width": "100%",
+        }
+      }
+    >
+      <div
+        className="toolbar"
+      >
+        <button
+          className="icon-button history-button"
+          data-tooltip-content="Chats history"
+          data-tooltip-id="history"
+          onClick={[Function]}
+        >
+          <img
+            alt="History"
+            src="test-file-stub"
+            style={
+              {
+                "height": 24,
+                "width": 24,
+              }
+            }
+          />
+        </button>
+        <h1
+          className="title"
+        >
+          STUDYBOT
+        </h1>
+        <button
+          className="icon-button"
+          data-tooltip-content="New chat"
+          data-tooltip-id="newChat"
+          onClick={[Function]}
+        >
+          <img
+            alt="New chat"
+            src="test-file-stub"
+            style={
+              {
+                "height": 24,
+                "width": 24,
+              }
+            }
+          />
+        </button>
+        <div
+          aria-label="User Dropdown"
+          className="name-container"
+          onClick={[Function]}
+          role="button"
+        >
+          <h3
+            className="name"
+            style={
+              {
+                "padding": "1px",
+              }
+            }
+          >
+            T
+          </h3>
+        </div>
+      </div>
+    </header>
+    <div
+      className="sidebar "
+    >
+      <div
+        className="chat-list"
+      >
+        <p
+          style={
+            {
+              "color": "#888",
+              "fontSize": "1rem",
+              "marginTop": "15%",
+              "textAlign": "center",
+            }
+          }
+        >
+          No chats yet.
+        </p>
+      </div>
+    </div>
+  </div>,
+  <div
+    className="chatbot-wrapper "
+  >
+    <div
+      className="chatbot-container "
+    >
+      <div
+        className="message-list"
+      >
+        <div
+          className="agent"
+        >
+          <p
+            style={
+              {
+                "fontSize": "0.8rem",
+                "fontWeight": "bold",
+                "marginBottom": "8px",
+                "marginTop": "3px",
+              }
+            }
+          >
+            Enter your answer 
+            <br />
+             or:
+          </p>
+          <button
+            className="choice-button"
+            onClick={[Function]}
+            style={
+              {
+                "textAlign": "center",
+              }
+            }
+          >
+            Show answer
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      className="input-container"
+    >
+      <input
+        className="ask-me-input"
+        onChange={[Function]}
+        onKeyPress={[Function]}
+        placeholder="Ask me"
+        type="text"
+        value=""
+      />
+      <button
+        className="send-button"
+        disabled={true}
+        onClick={[Function]}
+      >
+        <img
+          alt="send"
+          src="test-file-stub"
+          style={
+            {
+              "height": 24,
+              "width": 24,
+            }
+          }
+        />
+      </button>
+    </div>
+  </div>,
+]
+`;
