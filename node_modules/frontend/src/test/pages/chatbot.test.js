@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  render,
-  screen,
-  fireEvent,
-  act,
-} from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import renderer from "react-test-renderer";
 import ChatPage from "../../pages/chatbot/chatbotpage";
 import { store } from "../../app/store";
@@ -18,15 +13,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router-dom";
 import { SidebarProvider } from "../../context/sidebarcontext";
-import {
-  setChatId,
-} from "../../app/slices/chat/chatslice";
+import { setChatId } from "../../app/slices/chat/chatslice";
 import {
   useGetMainAnswerMutation,
   useGetCommonQuestionAnswerMutation,
   useGetSubtopicExplanationMutation,
   useGetQuizFeedbackMutation,
   useGetQuizAnswerMutation,
+  useGetQuizQuestionChoicesMutation,
+  useGetQuizChoiceFeedbackMutation,
 } from "../../app/slices/agent/agentapislice.jsx";
 import { useCreateChatMutation } from "../../app/slices/chat/chatapislice.jsx";
 import { useCreateMessageMutation } from "../../app/slices/message/messageapislice.jsx";
@@ -138,6 +133,12 @@ jest.mock("../../app/slices/agent/agentapislice", () => {
   const getQuizAnswer = jest.fn(() => ({
     unwrap: jest.fn(() => Promise.resolve()),
   }));
+  const getQuizQuestionChoices = jest.fn(() => ({
+    unwrap: jest.fn(() => Promise.resolve()),
+  }));
+  const getQuizChoiceFeedback = jest.fn(() => ({
+    unwrap: jest.fn(() => Promise.resolve()),
+  }));
 
   return {
     __esModule: true,
@@ -152,6 +153,8 @@ jest.mock("../../app/slices/agent/agentapislice", () => {
     useGetSubtopicExplanationMutation: jest.fn(() => [getSubtopicExplanation]),
     useGetQuizFeedbackMutation: jest.fn(() => [getQuizFeedback]),
     useGetQuizAnswerMutation: jest.fn(() => [getQuizAnswer]),
+    useGetQuizQuestionChoicesMutation: jest.fn(() => [getQuizQuestionChoices]),
+    useGetQuizChoiceFeedbackMutation: jest.fn(() => [getQuizChoiceFeedback]),
   };
 });
 
@@ -724,7 +727,7 @@ describe("handleQuizSelection function", () => {
     expect(dispatch).toHaveBeenCalledWith(
       addMessage({
         chatId: "123",
-        message: "Enter your answer or show answer",
+        message: "Enter your answer or show answer or show choices",
         sender: "ChatGPT",
         optionType: "quiz",
         takeQuiz: true,
@@ -734,7 +737,7 @@ describe("handleQuizSelection function", () => {
     );
     expect(createMessage).toHaveBeenCalledWith({
       chatId: "123",
-      message: "Enter your answer or show answer",
+      message: "Enter your answer or show answer or show choices",
       sender: "ChatGPT",
       optionType: "quiz",
       takeQuiz: true,
@@ -768,7 +771,7 @@ describe("handleQuizSelection function 2", () => {
               },
               {
                 chatId: "123",
-                message: "Enter your answer or show answer",
+                message: "Enter your answer or show answer or show choices",
                 sender: "ChatGPT",
                 optionType: "quiz",
                 takeQuiz: true,
@@ -825,7 +828,7 @@ describe("handleQuizSelection function 2", () => {
         chatId: "123",
         message: `Show answer for: "how do linked lists store elements"`,
         sender: "user",
-        optionType: "takeQuizOrShowAnswer",
+        optionType: "showQuizAnswer",
         quizId: null,
       })
     );
@@ -833,7 +836,7 @@ describe("handleQuizSelection function 2", () => {
       chatId: "123",
       message: `Show answer for: "how do linked lists store elements"`,
       sender: "user",
-      optionType: "takeQuizOrShowAnswer",
+      optionType: "showQuizAnswer",
       quizId: null,
     });
     expect(getQuizAnswer).toHaveBeenCalledWith({
@@ -856,6 +859,173 @@ describe("handleQuizSelection function 2", () => {
       optionType: "quizFeedbackOrAnswer",
       takeQuiz: false,
       quizzes: ["What is a node in a linked list?"],
+    });
+  });
+
+  test("it handles flow of when user clicks on 'show choices' button", async () => {
+    const mockChoices = {
+      choices: {
+        quizChoices: ["choice1", "choice2", "choice3"],
+      },
+    };
+
+    const getQuizQuestionChoices = useGetQuizQuestionChoicesMutation()[0];
+    getQuizQuestionChoices.mockImplementation(() => ({
+      unwrap: jest.fn(() => Promise.resolve(mockChoices)),
+    }));
+
+    const button = screen.getByRole("button", {
+      name: /Show choices/i,
+    });
+
+    await act(async () => {
+      fireEvent.click(button);
+    });
+
+    expect(dispatch).toHaveBeenCalledWith(
+      addMessage({
+        chatId: "123",
+        message: `Show choices for: "how do linked lists store elements"`,
+        optionType: "showQuizChoices",
+        sender: "user",
+        quizId: null,
+      })
+    );
+    expect(createMessage).toHaveBeenCalledWith({
+      chatId: "123",
+      message: `Show choices for: "how do linked lists store elements"`,
+      optionType: "showQuizChoices",
+      sender: "user",
+      quizId: null,
+    });
+    expect(getQuizQuestionChoices).toHaveBeenCalledWith({
+      message: "how do linked lists store elements",
+    });
+    expect(dispatch).toHaveBeenCalledWith(
+      addMessage({
+        chatId: "123",
+        quizChoices: ["choice1", "choice2", "choice3"],
+        sender: "ChatGPT",
+        optionType: "showQuizChoices",
+        takeQuiz: true,
+        quizId: "123",
+      })
+    );
+    expect(createMessage).toHaveBeenCalledWith({
+      chatId: "123",
+      quizChoices: ["choice1", "choice2", "choice3"],
+      sender: "ChatGPT",
+      optionType: "showQuizChoices",
+      takeQuiz: true,
+      quizId: "123",
+    });
+  });
+});
+
+describe("handleQuizChoiceSelection function", () => {
+  beforeEach(async () => {
+    await act(async () => {
+      useSelector.mockImplementation((callback) => {
+        return callback({
+          messages: {
+            messages: [
+              {
+                chatId: "123",
+                sender: "user",
+                message: "how do linked lists store elements",
+                quizId: "123",
+              },
+              {
+                chatId: "123",
+                sender: "ChatGPT",
+                optionType: "showQuizChoices",
+                quizChoices: ["choice1","choice2","choice3"],
+                quizId: "123",
+              },
+            ],
+          },
+          chat: {
+            chatId: "123",
+            chats: [],
+          },
+        });
+      });
+    });
+  });
+
+  beforeEach(async () => {
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <MemoryRouter>
+            <SidebarProvider>
+              <ChatPage />
+            </SidebarProvider>
+          </MemoryRouter>
+        </Provider>
+      );
+    });
+  });
+  test("it handles flow of user's quiz question choice selection", async () => {
+    const mockFeedback = {
+      feedback: "feedback",
+      options: {
+        quizzes: ["quiz1","quiz2","quiz3"],
+      },
+      };
+    
+
+    const getQuizChoiceFeedback = useGetQuizChoiceFeedbackMutation()[0];
+    getQuizChoiceFeedback.mockImplementation(() => ({
+      unwrap: jest.fn(() => Promise.resolve(mockFeedback)),
+    }));
+
+    const button = screen.getByRole("button", {
+      name: /choice1/i,
+    });
+
+    await act(async () => {
+      fireEvent.click(button);
+    });
+
+    expect(dispatch).toHaveBeenCalledWith(
+      addMessage({
+        chatId: "123",
+        message: "choice1",
+        optionType: "quizChoice",
+        sender: "user",
+        quizId: "123",
+      })
+    );
+    expect(createMessage).toHaveBeenCalledWith({
+      chatId: "123",
+      message: "choice1",
+      optionType: "quizChoice",
+      sender: "user",
+      quizId: "123",
+    });
+    expect(getQuizChoiceFeedback).toHaveBeenCalledWith({
+      question: "how do linked lists store elements",
+      choices: ["choice1","choice2","choice3"],
+      answer: "choice1",
+    });
+    expect(dispatch).toHaveBeenCalledWith(
+      addMessage({
+        chatId: "123",
+        message: "feedback",
+        sender: "ChatGPT",
+        optionType: "quizFeedbackOrAnswer",
+        takeQuiz: false,
+        quizzes: ["quiz1","quiz2","quiz3"],
+      })
+    );
+    expect(createMessage).toHaveBeenCalledWith({
+      chatId: "123",
+      message: "feedback",
+      sender: "ChatGPT",
+      optionType: "quizFeedbackOrAnswer",
+      takeQuiz: false,
+      quizzes: ["quiz1","quiz2","quiz3"],
     });
   });
 });

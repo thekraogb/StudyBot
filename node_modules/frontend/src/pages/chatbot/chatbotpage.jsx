@@ -10,6 +10,8 @@ import {
   useGetSubtopicExplanationMutation,
   useGetQuizFeedbackMutation,
   useGetQuizAnswerMutation,
+  useGetQuizQuestionChoicesMutation,
+  useGetQuizChoiceFeedbackMutation,
 } from "../../app/slices/agent/agentapislice.jsx";
 import { useCreateChatMutation } from "../../app/slices/chat/chatapislice.jsx";
 import { setChatId } from "../../app/slices/chat/chatslice.jsx";
@@ -31,6 +33,8 @@ const ChatPage = () => {
   const [getCommonQuestionAnswer] = useGetCommonQuestionAnswerMutation();
   const [getSubtopicExplanation] = useGetSubtopicExplanationMutation();
   const [getQuizAnswer] = useGetQuizAnswerMutation();
+  const [getQuizQuestionChoices] = useGetQuizQuestionChoicesMutation();
+  const [getQuizChoiceFeedback] = useGetQuizChoiceFeedbackMutation();
   const dispatch = useDispatch();
   const [createMessage] = useCreateMessageMutation();
   const [createChat] = useCreateChatMutation();
@@ -108,7 +112,7 @@ const ChatPage = () => {
       if (response) {
         let agentResponse;
         if (messages[messages.length - 1]?.takeQuiz) {
-          // if takeQuiz is true, set optionType to takeQuizOrShowAnswer
+          // if takeQuiz is true, set optionType to quizFeedbackOrAnswer
           // (the agent's feedback to user's answer or answer of the quiz message ) and
           // reset takeQuiz to false so that further agent messages, after a user prompt, are the main options message.
           agentResponse = {
@@ -159,6 +163,8 @@ const ChatPage = () => {
   // Handle user choices selection
   const handleSelection = async (selection, selectionType) => {
     setIsResponseComplete(false);
+    setIsLoading(true);
+
     const userSelection = { chatId, message: selection, sender: "user" };
 
     dispatch(addMessage(userSelection));
@@ -172,11 +178,9 @@ const ChatPage = () => {
 
     // get agent's response based on selection type
     if (selectionType === "question") {
-      setIsLoading(true);
 
       response = await getCommonQuestionAnswer({ message: selection }).unwrap();
     } else if (selectionType === "subtopic") {
-      setIsLoading(true);
 
       response = await getSubtopicExplanation({ message: selection }).unwrap();
     }
@@ -214,16 +218,114 @@ const ChatPage = () => {
     quiz_Id
   ) => {
     setIsResponseComplete(false);
-
+    
     const quizId = selectionType === "quiz" ? uuidv4() : null;
     const quizQuestion = selectionType === "quiz" ? selection : null;
-
+    
     const userSelection = {
       chatId,
       message: selection,
       optionType: selectionType,
       sender: "user",
       quizId,
+    };
+    
+    dispatch(addMessage(userSelection));
+    
+    const result = await createMessage(userSelection).unwrap();
+    if (result.success === false) {
+      errorToast(result.message);
+    }
+    
+    let quizAnswerResponse;
+    
+    // get quiz answer if user clicks 'show answer' button
+    if (selectionType === "showQuizAnswer" && takeQuiz === false) {
+      setIsLoading(true);
+
+      // get user quiz selection
+      const quizSelection = messages.find(
+        (msg) => msg.sender === "user" && msg.quizId === quiz_Id
+      );
+      quizAnswerResponse = await getQuizAnswer({
+        message: quizSelection.message,
+      }).unwrap();
+    }
+
+    let quizChoicesResponse;
+
+    // get quiz question choices if user clicks 'show choices' button
+    if (selectionType === "showQuizChoices" && takeQuiz === true) {
+      setIsLoading(true);
+      // get user quiz selection
+      const quizSelection = messages.find(
+        (msg) => msg.sender === "user" && msg.quizId === quiz_Id
+      );
+      quizChoicesResponse = await getQuizQuestionChoices({
+        message: quizSelection.message,
+      }).unwrap();
+    }
+
+    let choiceResponse;
+
+    if (quizAnswerResponse) {
+      choiceResponse = {
+        chatId,
+        message: quizAnswerResponse.answer || " ",
+        sender: "ChatGPT",
+        optionType: "quizFeedbackOrAnswer",
+        takeQuiz: takeQuiz,
+        quizzes: quizAnswerResponse.options?.quizzes || [],
+      };
+    } else if (quizChoicesResponse) {
+      choiceResponse = {
+        chatId,
+        quizChoices: quizChoicesResponse.choices.quizChoices || [],
+        sender: "ChatGPT",
+        optionType: selectionType,
+        takeQuiz: takeQuiz,
+        quizId: quiz_Id,
+      };
+    } else {
+      choiceResponse = {
+        chatId,
+        message: "Enter your answer or show answer or show choices",
+        sender: "ChatGPT",
+        optionType: selectionType,
+        takeQuiz: takeQuiz,
+        quizId,
+        quizQuestion,
+      };
+    }
+
+    setIsLoading(false);
+
+    dispatch(addMessage(choiceResponse));
+
+    const result2 = await createMessage(choiceResponse).unwrap();
+    if (result2.success === false) {
+      errorToast(result2.message);
+    }
+
+    setIsResponseComplete(true);
+  };
+
+  // Handle quiz question choice selection
+  const handleQuizChoiceSelection = async (
+    selection,
+    choices,
+    selectionType,
+    quiz_Id
+  ) => {
+    setIsResponseComplete(false);
+    setIsLoading(true);
+
+    const userSelection = {
+      chatId,
+      message: selection,
+      optionType: selectionType,
+      sender: "user",
+      quizId: quiz_Id,
     };
 
     dispatch(addMessage(userSelection));
@@ -233,43 +335,26 @@ const ChatPage = () => {
       errorToast(result.message);
     }
 
-    let response;
+    // get user quiz selection
+    const quizSelection = messages.find(
+      (msg) => msg.sender === "user" && msg.quizId === quiz_Id
+    );
 
-    // get quiz answer if user clicks 'show answer' button
-    if (selectionType === "takeQuizOrShowAnswer" && takeQuiz === false) {
-      setIsLoading(true);
 
-      // get user quiz selection
-      const quizSelection = messages.find(
-        (msg) => msg.sender === "user" && msg.quizId === quiz_Id
-      );
-      response = await getQuizAnswer({
-        message: quizSelection.message,
-      }).unwrap();
-    }
+    const response = await getQuizChoiceFeedback({
+      question: quizSelection.message,
+      choices: choices,
+      answer: selection,
+    }).unwrap();
 
-    let choiceResponse;
-
-    if (response) {
-      choiceResponse = {
-        chatId,
-        message: response.answer || " ",
-        sender: "ChatGPT",
-        optionType: "quizFeedbackOrAnswer",
-        takeQuiz: takeQuiz,
-        quizzes: response.options?.quizzes || [],
-      };
-    } else {
-      choiceResponse = {
-        chatId,
-        message: "Enter your answer or show answer",
-        sender: "ChatGPT",
-        optionType: selectionType,
-        takeQuiz: takeQuiz,
-        quizId,
-        quizQuestion,
-      };
-    }
+    const choiceResponse = {
+      chatId,
+      message: response.feedback || " ",
+      sender: "ChatGPT",
+      optionType: "quizFeedbackOrAnswer",
+      takeQuiz: false,
+      quizzes: response.options?.quizzes || [],
+    };
 
     setIsLoading(false);
 
@@ -291,6 +376,7 @@ const ChatPage = () => {
           isLoading={isLoading}
           handleSelection={handleSelection}
           handleQuizSelection={handleQuizSelection}
+          handleQuizChoiceSelection={handleQuizChoiceSelection}
         />
       </div>
       <div className="input-container">

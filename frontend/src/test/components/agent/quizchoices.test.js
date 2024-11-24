@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  render,
-  screen,
-  fireEvent,
-  act,
-} from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import renderer from "react-test-renderer";
 import ChatPage from "../../../pages/chatbot/chatbotpage";
 import { store } from "../../../app/store";
@@ -13,7 +8,7 @@ import { useSelector } from "react-redux";
 import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router-dom";
 import { SidebarProvider } from "../../../context/sidebarcontext";
-import QuestionAnswer from "../../../components/agent/commonquestion";
+import QuizChoices from "../../../components/agent/quizchoices";
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -129,15 +124,10 @@ useSelector.mockImplementation((callback) => {
       messages: [
         {
           chatId: "123",
-          message:
-            "A data structure is a way of organizing and storing data...",
+          quizChoices: ["choice1","choice2","choice3"],
           sender: "ChatGPT",
-          commonQuestions: [
-            "how are data structures important in computer science",
-            "What is a data structure?",
-            "Why are different data structures used for different tasks?",
-          ],
-          optionType: "question",
+          optionType: "showQuizChoices",
+          quizId: "123",
         },
       ],
     },
@@ -152,7 +142,7 @@ useSelector.mockImplementation((callback) => {
   });
 });
 
-describe("QuestionAnswer", () => {
+describe("QuizChoices", () => {
   beforeEach(async () => {
     await act(async () => {
       render(
@@ -168,7 +158,7 @@ describe("QuestionAnswer", () => {
     });
   });
 
-  test("it renders QuestionAnswer component", async () => {
+  test("it renders QuizChoices component", async () => {
     const tree = renderer
       .create(
         <Provider store={store}>
@@ -186,34 +176,32 @@ describe("QuestionAnswer", () => {
   });
 });
 
-describe("handleSelection function", () => {
-  const mockHandleSelection = jest.fn();
-
-  const agentResponse =
-    "A data structure is a way of organizing and storing data...";
-  const commonQuestions = ["What is a data structure?"];
+describe("handleQuizChoiceSelection function", () => {
+  const mockHandleQuizChoiceSelection = jest.fn();
 
   beforeEach(async () => {
     await act(async () => {
       render(
-        <QuestionAnswer
-        agentResponse={agentResponse}
-        questions={commonQuestions}
-        handleSelection={mockHandleSelection}
+        <QuizChoices
+        quizChoices= {["choice1","choice2","choice3"]}
+        handleQuizChoiceSelection={mockHandleQuizChoiceSelection}
+          quizId={"123"}
         />
       );
     });
   });
 
-  test("it calls handleSelection", async () => {
-    const questionButton = screen.getByRole("button", {
-      name: "What is a data structure?",
+  test("it calls handleQuizChoiceSelection when clicking a choice button", async () => {
+    const subtopicButton = screen.getByRole("button", {
+      name: "choice1",
     });
-    fireEvent.click(questionButton);
+    fireEvent.click(subtopicButton);
 
-    expect(mockHandleSelection).toHaveBeenCalledWith(
-      "What is a data structure?",
-      "question"
+    expect(mockHandleQuizChoiceSelection).toHaveBeenCalledWith(
+      "choice1",
+      ["choice1","choice2","choice3"],
+      "quizChoice",
+      "123"
     );
   });
 });

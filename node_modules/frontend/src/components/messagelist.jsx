@@ -4,11 +4,12 @@ import QuestionAnswer from "./agent/commonquestion";
 import SubtopicExplanation from "./agent/subtopic";
 import QuizFeedbackOrAnswer from "./agent/quiz";
 import QuizOptions from "./agent/quizoptions";
+import QuizChoices from "./agent/quizchoices";
 import { v4 as uuidv4 } from "uuid";
 import { useSelector } from "react-redux";
 import "../pages/chatbot/Chatbot.css";
 
-const MessageList = ({ handleSelection, handleQuizSelection, isLoading }) => {
+const MessageList = ({ handleSelection, handleQuizSelection, isLoading, handleQuizChoiceSelection }) => {
   const messages = useSelector((state) => state.messages.messages);
 
   return (
@@ -62,6 +63,15 @@ const MessageList = ({ handleSelection, handleQuizSelection, isLoading }) => {
                   handleQuizSelection={handleQuizSelection}
                   quizId={msg.quizId}
                   quizQ={msg.quizQuestion}
+                />
+              );
+            } else if (msg.sender === "ChatGPT" && msg.optionType === "showQuizChoices") {
+              return (
+                <QuizChoices
+                  key={uuidv4()}
+                  quizChoices={msg.quizChoices}
+                  handleQuizChoiceSelection={handleQuizChoiceSelection}
+                  quizId={msg.quizId}
                 />
               );
             } else if (

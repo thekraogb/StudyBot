@@ -46,6 +46,24 @@ export const agentApiSlice = apiSlice.injectEndpoints({
         body: message,
       }),
     }),
+
+    // get quiz question choices
+    getQuizQuestionChoices: builder.mutation({
+      query: (message) => ({
+        url: "/agent/quizChoices",
+        method: "POST",
+        body: message,
+      }),
+    }),
+
+        // get quiz question choice selection feedback
+        getQuizChoiceFeedback: builder.mutation({
+          query: (message) => ({
+            url: "/agent/quizChoiceFeedback",
+            method: "POST",
+            body: message,
+          }),
+        }),
   }),
 });
 
@@ -55,4 +73,7 @@ export const {
   useGetSubtopicExplanationMutation,
   useGetQuizFeedbackMutation,
   useGetQuizAnswerMutation,
+  useGetQuizQuestionChoicesMutation,
+  useGetQuizChoiceFeedbackMutation,
 } = agentApiSlice;
+

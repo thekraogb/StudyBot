@@ -220,7 +220,7 @@ export const getsubtopic = async (req, res) => {
     const data = await response.json();
     let answer = data.choices[0].message.content;
 
-    // get common questions options
+    // get subtopics options
     const optionsResponse = await fetch(
       "https://api.openai.com/v1/chat/completions",
       {
@@ -279,6 +279,7 @@ export const getsubtopic = async (req, res) => {
   }
 };
 
+// get quiz question answer feedback
 export const getQuizFeedback = async (req, res) => {
   const { question, answer } = req.body;
 
@@ -363,6 +364,7 @@ export const getQuizFeedback = async (req, res) => {
   }
 };
 
+// get quiz question answer
 export const getQuizAnswer = async (req, res) => {
   const { message } = req.body;
 
@@ -393,7 +395,7 @@ export const getQuizAnswer = async (req, res) => {
     const data = await response.json();
     let answer = data.choices[0].message.content;
 
-    // get common questions options
+    // get quizzes options
     const optionsResponse = await fetch(
       "https://api.openai.com/v1/chat/completions",
       {
@@ -437,6 +439,149 @@ export const getQuizAnswer = async (req, res) => {
 
     res.status(200).json({
       answer: answer,
+      options: options,
+    });
+  } catch (error) {
+    console.error(error);
+    if (!res.headersSent) {
+      res.status(500).send("Error fetching data");
+    }
+  }
+};
+
+export const getquizChoices = async (req, res) => {
+  const { message } = req.body;
+try{
+    // get quiz choices 
+    const choicesResponse = await fetch(
+      "https://api.openai.com/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + API_KEY,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo",
+          messages: [
+            {
+              role: "system",
+              content:
+                "You are an assistant for STEM-related topics." +
+                "Based on the following question, suggest 3 choices for the correct answer of the question." +
+                "Return the response in the following JSON format:\n\n" +
+                `{
+              "quizChoices": ["choice 1", "choice 2", "choice 3"]
+            }\n\n` +
+                "Make sure the output strictly follows this structure.",
+            },
+            {
+              role: "user",
+              content: message,
+            },
+          ],
+        }),
+      }
+    );
+
+    const choicesData = await choicesResponse.json();
+    let choices = choicesData.choices[0].message.content;
+
+    // convert options string into a JSON object
+    try {
+      choices = JSON.parse(choices);
+    } catch (error) {
+      console.error("Error parsing options:", error);
+      choices = {};
+    }
+
+    res.status(200).json({
+      choices: choices,
+});
+  } catch (error) {
+    console.error(error);
+    if (!res.headersSent) {
+      res.status(500).send("Error fetching data");
+    }
+  }
+};
+
+// get quiz question choice selection feedback
+export const getQuizChoiceFeedback = async (req, res) => {
+  const { question, choices, answer } = req.body;
+
+  // get chatgpt's feedback
+  try {
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + API_KEY,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "gpt-3.5-turbo",
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are an assistant for STEM-related topics. Give feedback directly and " +
+              "briefly on the user's choice selection for the question.",
+          },
+          {
+            role: "user",
+            content: `Question: ${question}\nChoices: ${choices}\nUser's choice: ${answer}`,
+          },
+        ],
+      }),
+    });
+
+    const data = await response.json();
+    let feedback = data.choices[0].message.content;
+
+    // get common questions options
+    const optionsResponse = await fetch(
+      "https://api.openai.com/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + API_KEY,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo",
+          messages: [
+            {
+              role: "system",
+              content:
+                "Based on the following question, suggest 3 quiz questions related to the question." +
+                "Return the response in the following JSON format:\n\n" +
+                `{
+              "quizzes": ["Quiz 1", "Quiz 2", "Quiz 3"]
+            }\n\n` +
+                "Make sure the output strictly follows this structure.",
+            },
+            {
+              role: "user",
+              content: question,
+            },
+          ],
+        }),
+      }
+    );
+
+    const optionsData = await optionsResponse.json();
+    let options = optionsData.choices[0].message.content;
+
+    // convert options string into a JSON object
+    try {
+      options = JSON.parse(options);
+    } catch (error) {
+      console.error("Error parsing options:", error);
+      options = {};
+    }
+
+    res.status(200).json({
+      feedback: feedback,
       options: options,
     });
   } catch (error) {

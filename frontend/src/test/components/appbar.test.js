@@ -76,6 +76,8 @@ jest.mock("../../app/slices/agent/agentapislice", () => ({
   useGetSubtopicExplanationMutation: jest.fn(() => [jest.fn()]),
   useGetQuizFeedbackMutation: jest.fn(() => [jest.fn()]),
   useGetQuizAnswerMutation: jest.fn(() => [jest.fn()]),
+  useGetQuizQuestionChoicesMutation: jest.fn(() => [jest.fn()]),
+  useGetQuizChoiceFeedbackMutation: jest.fn(() => [jest.fn()]),
 }));
 
 describe("Appbar", () => {

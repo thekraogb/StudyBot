@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`QuizOptions it renders QuizOptions component 1`] = `
+exports[`QuizChoices it renders QuizChoices component 1`] = `
 [
   <div
     className="appbar-container"
@@ -108,44 +108,28 @@ exports[`QuizOptions it renders QuizOptions component 1`] = `
         <div
           className="agent"
         >
-          <p
-            style={
-              {
-                "fontSize": "0.8rem",
-                "fontWeight": "bold",
-                "marginBottom": "8px",
-                "marginTop": "3px",
-                "textAlign": "center",
-              }
-            }
+          <div
+            className="choices-list"
           >
-            Enter your answer 
-            <br />
-             or
-          </p>
-          <button
-            className="choice-button"
-            onClick={[Function]}
-            style={
-              {
-                "marginBottom": "7px",
-                "textAlign": "center",
-              }
-            }
-          >
-            Show answer
-          </button>
-          <button
-            className="choice-button"
-            onClick={[Function]}
-            style={
-              {
-                "textAlign": "center",
-              }
-            }
-          >
-            Show choices
-          </button>
+            <button
+              className="choice-button"
+              onClick={[Function]}
+            >
+              choice1
+            </button>
+            <button
+              className="choice-button"
+              onClick={[Function]}
+            >
+              choice2
+            </button>
+            <button
+              className="choice-button"
+              onClick={[Function]}
+            >
+              choice3
+            </button>
+          </div>
         </div>
       </div>
     </div>

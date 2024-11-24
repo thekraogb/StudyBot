@@ -93,6 +93,12 @@ jest.mock("../../../app/slices/agent/agentapislice", () => {
   const getQuizAnswer = jest.fn(() => ({
     unwrap: jest.fn(() => Promise.resolve()),
   }));
+  const getQuizQuestionChoices = jest.fn(() => ({
+    unwrap: jest.fn(() => Promise.resolve()),
+  }));
+  const getQuizChoiceFeedback = jest.fn(() => ({
+    unwrap: jest.fn(() => Promise.resolve()),
+  }));
 
   return {
     __esModule: true,
@@ -107,6 +113,8 @@ jest.mock("../../../app/slices/agent/agentapislice", () => {
     useGetSubtopicExplanationMutation: jest.fn(() => [getSubtopicExplanation]),
     useGetQuizFeedbackMutation: jest.fn(() => [getQuizFeedback]),
     useGetQuizAnswerMutation: jest.fn(() => [getQuizAnswer]),
+    useGetQuizQuestionChoicesMutation: jest.fn(() => [getQuizQuestionChoices]),
+    useGetQuizChoiceFeedbackMutation: jest.fn(() => [getQuizChoiceFeedback]),
   };
 });
 

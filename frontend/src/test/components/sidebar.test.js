@@ -8,10 +8,7 @@ import {
   renderHook,
 } from "@testing-library/react";
 import renderer from "react-test-renderer";
-import user from "@testing-library/user-event";
-import ChatPage from "../../pages/chatbot/chatbotpage";
 import { store } from "../../app/store";
-import Appbar from "../../components/appbar/Appbar";
 import {
   warningToast,
   successToast,
@@ -27,21 +24,9 @@ import {
   setChats,
 } from "../../app/slices/chat/chatslice";
 import {
-  useGetMainAnswerMutation,
-  useGetCommonQuestionAnswerMutation,
-  useGetSubtopicExplanationMutation,
-  useGetQuizFeedbackMutation,
-  useGetQuizAnswerMutation,
-} from "../../app/slices/agent/agentapislice.jsx";
-import {
   useDeleteChatMutation,
   useFetchChatsQuery,
 } from "../../app/slices/chat/chatapislice.jsx";
-import { useCreateChatMutation } from "../../app/slices/chat/chatapislice.jsx";
-import { useCreateMessageMutation } from "../../app/slices/message/messageapislice.jsx";
-import { addMessage } from "../../app/slices/message/messageslice.jsx";
-import { v4 as uuidv4 } from "uuid";
-import Main from "../../components/agent/main";
 import Sidebar from "../../components/sidebar/sidebar.jsx";
 import { setMessages } from "../../app/slices/message/messageslice";
 
@@ -162,6 +147,12 @@ jest.mock("../../app/slices/agent/agentapislice", () => {
   const getQuizAnswer = jest.fn(() => ({
     unwrap: jest.fn(() => Promise.resolve()),
   }));
+  const getQuizQuestionChoices = jest.fn(() => ({
+    unwrap: jest.fn(() => Promise.resolve()),
+  }));
+  const getQuizChoiceFeedback = jest.fn(() => ({
+    unwrap: jest.fn(() => Promise.resolve()),
+  }));
 
   return {
     __esModule: true,
@@ -176,6 +167,8 @@ jest.mock("../../app/slices/agent/agentapislice", () => {
     useGetSubtopicExplanationMutation: jest.fn(() => [getSubtopicExplanation]),
     useGetQuizFeedbackMutation: jest.fn(() => [getQuizFeedback]),
     useGetQuizAnswerMutation: jest.fn(() => [getQuizAnswer]),
+    useGetQuizQuestionChoicesMutation: jest.fn(() => [getQuizQuestionChoices]),
+    useGetQuizChoiceFeedbackMutation: jest.fn(() => [getQuizChoiceFeedback]),
   };
 });
 

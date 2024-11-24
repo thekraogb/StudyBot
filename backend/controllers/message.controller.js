@@ -6,7 +6,7 @@ import { setTitle } from "../utils/chatTitle.js";
 export const createMessage = async (req, res) => {
   const message = req.body;
 
-  if (!message.message || !message.sender || !message.chatId) {
+  if (!message.sender || !message.chatId) {
     return res
       .status(400)
       .json({ success: false, message: "Invalid message data" });

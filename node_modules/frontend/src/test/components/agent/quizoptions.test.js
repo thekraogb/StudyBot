@@ -93,6 +93,12 @@ jest.mock("../../../app/slices/agent/agentapislice", () => {
   const getQuizAnswer = jest.fn(() => ({
     unwrap: jest.fn(() => Promise.resolve()),
   }));
+  const getQuizQuestionChoices = jest.fn(() => ({
+    unwrap: jest.fn(() => Promise.resolve()),
+  }));
+  const getQuizChoiceFeedback = jest.fn(() => ({
+    unwrap: jest.fn(() => Promise.resolve()),
+  }));
 
   return {
     __esModule: true,
@@ -107,6 +113,8 @@ jest.mock("../../../app/slices/agent/agentapislice", () => {
     useGetSubtopicExplanationMutation: jest.fn(() => [getSubtopicExplanation]),
     useGetQuizFeedbackMutation: jest.fn(() => [getQuizFeedback]),
     useGetQuizAnswerMutation: jest.fn(() => [getQuizAnswer]),
+    useGetQuizQuestionChoicesMutation: jest.fn(() => [getQuizQuestionChoices]),
+    useGetQuizChoiceFeedbackMutation: jest.fn(() => [getQuizChoiceFeedback]),
   };
 });
 
@@ -116,7 +124,7 @@ useSelector.mockImplementation((callback) => {
       messages: [
         {
           chatId: "123",
-          message: "Enter your answer or show answer",
+          message: "Enter your answer or show answer or show choices",
           sender: "ChatGPT",
           optionType: "quiz",
           quizId: "123",
@@ -173,7 +181,6 @@ describe("handleQuizSelection function", () => {
   const mockHandleQuizSelection = jest.fn();
 
   const quizQuestion = "how do linked lists store elements";
-  const subtopic = ["Algorithms"];
 
   beforeEach(async () => {
     await act(async () => {
@@ -187,7 +194,7 @@ describe("handleQuizSelection function", () => {
     });
   });
 
-  test("it calls handleQuizSelection", async () => {
+  test("it calls handleQuizSelection when clicking 'Show answer'", async () => {
     const subtopicButton = screen.getByRole("button", {
       name: "Show answer",
     });
@@ -195,8 +202,22 @@ describe("handleQuizSelection function", () => {
 
     expect(mockHandleQuizSelection).toHaveBeenCalledWith(
       `Show answer for: "${quizQuestion}"`,
-      "takeQuizOrShowAnswer",
+      "showQuizAnswer",
       false,
+      "123"
+    );
+  });
+
+  test("it calls handleQuizSelection when clicking 'Show choices'", async () => {
+    const subtopicButton = screen.getByRole("button", {
+      name: "Show choices",
+    });
+    fireEvent.click(subtopicButton);
+
+    expect(mockHandleQuizSelection).toHaveBeenCalledWith(
+      `Show choices for: "${quizQuestion}"`,
+      "showQuizChoices",
+      true,
       "123"
     );
   });

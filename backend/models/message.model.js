@@ -4,7 +4,7 @@ const messageSchema = new mongoose.Schema(
 	{
 		message: {
 			type: String,
-			required: true,
+			// required: true,
 		},
 		sender: {
 			type: String,
@@ -33,6 +33,9 @@ const messageSchema = new mongoose.Schema(
         quizId: {
             type: String,
         },
+        quizChoices: {
+            type: [String],
+        }
 	},
 	{
 		timestamps: true, 
